@@ -43,6 +43,83 @@ Streamed Delivery
 Batch Delivery
 Secured Delivery
 JSON SupportParquet SupportORC SupportDisk IO Based MessagingRam, are these features
+Kill
 
 offline support Messaging 
+
+KIll this  ctrl + c
+
+stop zookeeper server + Kafka server 
+
+
+go to Azure
+
+create resource group
+
+add event hub  iomegaeventhubschinmay
+
+Create eventhub inside iomegaeventhubschinmay
+
+execute program through eventhub and capture message through event hub 
+
+
+
+configuration properties file:
+
+bootstrap.servers=iomegaeventhubs.servicebus.windows.net:9093
+security.protocol=SASL_SSL
+sasl.mechanism=PLAIN
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="Endpoint=sb://iomegaeventhubs.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=CdEmPP5K+lrqGfhGx77qpt8NbmVfa0+3rXKNXX7DbyE=";
+
+copy 69-72 into other file and save it into somelocation eh.properties and add ;EntityPath=traininglinks after endpoint link 
+
+
+kafka-console-producer.bat --broker-list iomegaeventhubs.servicebus.windows.net:9093 --topic sql-insert --producer.config c:\config.properties
+
+kafka-console-consumer.bat --broker-list iomegaeventhubs.servicebus.windows.net:9093 --topic sql-insert --consumer.config c:\config.properties
+
+
+go to command prompt 
+
+
+
+C:\kafka_2.11-2.0.0\bin\windows>kafka-console-producer.bat --topic "traininglinks" --broker-list iomegaeventhubschinmay.servicebus.windows.net:9093 --producer.config c:\temp\eh.properties
+
+C:\kafka_2.11-2.0.0\bin\windows>kafka-console-consumer.bat --topic "traininglinks" --bootstrap-server iomegaeventhubschinmay.servicebus.windows.net:9093 --consumer.config c:\temp\eh.properties
+
+type message on producer can be visible in consumer command prompt 
+
+
+Spark Integration with kafka
+
+
+
+spark-shell --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.0
+
+val directory = "c:/Temp/data"
+import org.apache.spark.sql.types._
+import org.apache.spark.sql._
+val customerSchema = StructType(
+Array(
+StructField("customerId",IntegerType,true),
+StructField("customerName",StringType,true),
+StructField("address",StringType,true),
+StructField("orderAmount",IntegerType,true)
+)
+)
+val fileStream = spark.readStream.option("inferSchema","false").
+option("sep",",").
+option("header","false").
+schema(customerSchema).csv(directory)
+fileStream.printSchema
+val groupedResult = fileStream.groupBy("address").agg(sum("orderAmount") as "Total").selectExpr("address", "Total")
+val consumer = groupedResult.writeStream.outputMode("complete").format("console").option("truncate","false").start
+consumer.isActive
+consumer.status
+consumer.stop
+
+
+10,Nortwind,Bangalore,23000
+11,Westwind,Bangalore,23000
+12,Eastwind,Hyderabad,25000
 
