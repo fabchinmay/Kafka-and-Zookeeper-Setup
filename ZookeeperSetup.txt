@@ -1,0 +1,48 @@
+Start Zookeeper Server
+zkserver
+
+Start Kafka Server and Broker
+kafka-server-start.bat .\config\server.properties
+
+To Create Topics
+kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic sql-insert
+
+To Start Producer
+kafka-console-producer.bat --broker-list localhost:9092 --topic sql-insert
+
+To Start Consumer
+kafka-console-consumer.batch --bootstrap-server localhost:9092 --topic ["sql-insert"] --from-beginning
+
+
+
+C:\kafka_2.11-2.0.0\bin\windows>kafka-server-start.bat ..\..\config\server.properties
+
+open cmd
+
+C:\kafka_2.11-2.0.0\bin\windows>kafka-topics.bat --create --topic traininglinks --zookeeper localhost:2181 --replication-factor 1 --partitions 1
+
+created a topic traininglinks
+
+create two program
+
+C:\kafka_2.11-2.0.0\bin\windows>start
+
+C:\kafka_2.11-2.0.0\bin\windows>
+
+create subscriber consumer and producse
+
+C:\kafka_2.11-2.0.0\bin\windows>kafka-console-consumer.bat --topic "traininglinks" --bootstrap-server localhost:9002 --from-beginning
+
+after somet ime terminate batch job (Y/N)
+
+start in different cmd prompt parallely
+C:\kafka_2.11-2.0.0\bin\windows>kafka-console-producer.bat --topic "traininglinks" --broker-list localhost:9092
+welcome to kafka-console-consumersimplified Messaging
+No Transactions Support
+Streamed Delivery
+Batch Delivery
+Secured Delivery
+JSON SupportParquet SupportORC SupportDisk IO Based MessagingRam, are these features
+
+offline support Messaging 
+
